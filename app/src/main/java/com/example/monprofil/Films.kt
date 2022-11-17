@@ -46,11 +46,7 @@ fun Films(classes: WindowSizeClass, viewmodel: MainViewModel, navController: Nav
     )
     val searchWidgetState by viewmodel.searchWidgetState
     val searchTextState by viewmodel.searchTextState
-    if (viewmodel.searchTextState.value == "") {
-        viewmodel.getFilmsInitiaux()
-    } else {
-        viewmodel.getSearchFilms()
-    }
+    viewmodel.getFilmsInitiaux()
     when (classeLargeur) {
         WindowWidthSizeClass.Compact-> {
             Scaffold(
@@ -67,6 +63,7 @@ fun Films(classes: WindowSizeClass, viewmodel: MainViewModel, navController: Nav
                         },
                         onSearchClicked = {
                             Log.d("Searched Text", it)
+                            viewmodel.getSearchFilms()
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
