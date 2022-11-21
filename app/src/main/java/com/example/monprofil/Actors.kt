@@ -3,11 +3,9 @@ package com.example.monprofil
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -52,11 +50,7 @@ fun Actors(
     )
     val searchWidgetState by viewmodel.searchWidgetState
     val searchTextState by viewmodel.searchTextState
-    if (viewmodel.searchTextState.value == "") {
-        viewmodel.getActorsInitiaux()
-    } else {
-        viewmodel.getSearchActors()
-    }
+    viewmodel.getActorsInitiaux()
     when (classeLargeur) {
         WindowWidthSizeClass.Compact-> {
             Scaffold(
@@ -73,6 +67,7 @@ fun Actors(
                         },
                         onSearchClicked = {
                             Log.d("Searched Text", it)
+                            viewmodel.getSearchActors()
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
@@ -123,7 +118,54 @@ fun Actors(
             }
         }
         else -> {
-
+            Scaffold(
+                bottomBar = {
+                    BottomNavigation {
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        val currentDestination = navBackStackEntry?.destination
+                        items.forEach { screen ->
+                            BottomNavigationItem(
+                                icon = { Icon(screen.resourceId, contentDescription = screen.description) },
+                                label = { Text(screen.label) },
+                                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                                onClick = {
+                                    navController.navigate(screen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            ) {
+                Surface() {
+                    LazyHorizontalGrid(rows = GridCells.Fixed(2),
+                        modifier = Modifier.background(Color.Black))
+                    {
+                        items(actors) { actor ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .padding(20.dp)
+                                    .background(Color.White)
+                                    .padding(10.dp)
+                            ) {
+                                AsyncImage(
+                                    model = "https://image.tmdb.org/t/p/w500" + actor.profile_path,
+                                    contentDescription = "Affiche du film"
+                                )
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = actor.name)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

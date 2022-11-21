@@ -1,43 +1,50 @@
 package com.example.monprofil.models
 
-class Genre(val id: Int = 0, val name:String = "")
-
-class TmdbMovieResult(
-    var page: Int = 0,
+data class TmdbMovieResult(
     val results: List<TmdbMovie> = listOf())
 
-class TmdbSerieResult(
-    var page: Int = 0,
+data class TmdbSerieResult(
     val results: List<TmdbSerie> = listOf())
 
-class TmdbActorResult(
-    var page: Int = 0,
+data class TmdbActorResult(
     val results: List<TmdbActor> = listOf())
 
-class TmdbMovie(
+data class TmdbMovie(
     var overview: String = "",
     val release_date: String = "",
     val id: String = "",
     val title: String = "",
     val genres: List<Genre> = listOf(),
     val backdrop_path: String? = "",
-    val poster_path: String? = "")
-
-class TmdbSerie(
-    var overview: String = "",
-    val first_air_date: String = "",
-    val id: String = "",
-    val name: String = "",
-    val original_name: String = "",
-    val backdrop_path: String? = "",
-    val genres: List<Genre> = listOf(),
-    val poster_path: String? = "")
+    val poster_path: String? = "",
+    val credits: Credits = Credits())
 
 class TmdbActor(
     val profile_path: String = "",
+    val name: String = "")
+
+data class TmdbSerie(
     val id: String = "",
+    val backdrop_path: String = "",
+    val credits: Credits = Credits(),
+    val first_air_date: String = "",
+    val genres: List<Genre> = listOf(),
+    val origin_country: List<String> = listOf(),
     val name: String = "",
-    val original_name: String = "",
-    val backdrop_path: String? = "",
-    val genre_ids: List<Int> = listOf(),
-    val poster_path: String? = "")
+    val overview: String = "",
+    val poster_path: String = "",
+)
+
+data class Credits(
+    val cast: List<Cast> = listOf(),
+)
+
+data class Genre(
+    val name: String = ""
+)
+
+data class Cast(
+    val character: String = "",
+    val name: String = "",
+    val profile_path: String = ""
+)

@@ -67,13 +67,13 @@ class MainViewModel : ViewModel() {
 
     fun getFilmsDetails(idFilm: String) {
         viewModelScope.launch {
-            movie.value = service.movieDetails(idFilm, API_KEY)
+            movie.value = service.movieDetails(idFilm, API_KEY, "credits")
         }
     }
 
     fun getSeriesDetails(idSerie: String) {
         viewModelScope.launch {
-            serie.value = service.serieDetails(idSerie, API_KEY)
+            serie.value = service.serieDetails(idSerie, API_KEY, "credits")
         }
     }
 

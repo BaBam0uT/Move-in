@@ -31,10 +31,10 @@ interface TmdbAPI {
                              @Query("query") searchtext: String) : TmdbActorResult
 
     @GET("movie/{idFilm}")
-    suspend fun movieDetails(@Path("idFilm") id: String, @Query("api_key") api_key: String): TmdbMovie
+    suspend fun movieDetails(@Path("idFilm") id: String, @Query("api_key") api_key: String, @Query("append_to_response") append_to_response: String): TmdbMovie
 
     @GET("tv/{idSerie}")
-    suspend fun serieDetails(@Path("idSerie") id: String, @Query("api_key") api_key: String): TmdbSerie
+    suspend fun serieDetails(@Path("idSerie") id: String, @Query("api_key") api_key: String, @Query("append_to_response") append_to_response: String): TmdbSerie
 
 }
 

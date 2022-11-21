@@ -36,7 +36,11 @@ import com.example.monprofil.viewmodels.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Films(classes: WindowSizeClass, viewmodel: MainViewModel, navController: NavHostController) {
+fun Films(
+    classes: WindowSizeClass,
+    viewmodel: MainViewModel,
+    navController: NavHostController
+) {
     val classeLargeur = classes.widthSizeClass
     val films by viewmodel.movies.collectAsState()
     val items = listOf(
@@ -145,8 +149,8 @@ fun Films(classes: WindowSizeClass, viewmodel: MainViewModel, navController: Nav
                         modifier = Modifier.background(Color.Black))
                     {
                         items(films) { film ->
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .padding(20.dp)
                                     .background(Color.White)
@@ -156,14 +160,15 @@ fun Films(classes: WindowSizeClass, viewmodel: MainViewModel, navController: Nav
                                     model = "https://image.tmdb.org/t/p/w500" + film.poster_path,
                                     contentDescription = "Affiche du film"
                                 )
-                                Text(text = film.title)
-                                Text(text = film.release_date)
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(text = film.title)
+                                    Text(text = film.release_date)
+                                }
                             }
                         }
                     }
                 }
             }
-
         }
     }
 }

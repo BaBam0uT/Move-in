@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -47,11 +48,7 @@ fun Series(
     )
     val searchWidgetState by viewmodel.searchWidgetState
     val searchTextState by viewmodel.searchTextState
-    if (viewmodel.searchTextState.value == "") {
-        viewmodel.getSeriesInitiaux()
-    } else {
-        viewmodel.getSearchSeries()
-    }
+    viewmodel.getSeriesInitiaux()
     when (classeLargeur) {
         WindowWidthSizeClass.Compact-> {
             Scaffold(
@@ -68,6 +65,7 @@ fun Series(
                         },
                         onSearchClicked = {
                             Log.d("Searched Text", it)
+                            viewmodel.getSearchSeries()
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
@@ -112,7 +110,7 @@ fun Series(
                                 model = "https://image.tmdb.org/t/p/w500" + serie.poster_path,
                                 contentDescription = "Affiche du film"
                             )
-                            Text(text = serie.original_name)
+                            Text(text = serie.name)
                             Text(text = serie.first_air_date)
                         }
                     }
@@ -145,10 +143,11 @@ fun Series(
                 }
             ) {
                 LazyHorizontalGrid(rows = GridCells.Fixed(2),
-                    modifier = Modifier.background(Color.Black)) {
+                    modifier = Modifier.background(Color.Black))
+                {
                     items(series) { serie ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .padding(20.dp)
                                 .background(Color.White)
@@ -158,8 +157,10 @@ fun Series(
                                 model = "https://image.tmdb.org/t/p/w500" + serie.poster_path,
                                 contentDescription = "Affiche du film"
                             )
-                            Text(text = serie.name)
-                            Text(text = serie.first_air_date)
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(text = serie.name)
+                                Text(text = serie.first_air_date)
+                            }
                         }
                     }
                 }
