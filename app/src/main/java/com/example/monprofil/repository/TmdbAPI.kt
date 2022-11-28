@@ -1,9 +1,6 @@
-package com.example.monprofil.directories
+package com.example.monprofil.repository
 
-import androidx.compose.runtime.State
 import com.example.monprofil.models.*
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

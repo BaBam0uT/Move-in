@@ -5,23 +5,19 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.example.monprofil.SearchWidgetState
-import com.example.monprofil.directories.TmdbAPI
 import com.example.monprofil.models.TmdbActor
 import com.example.monprofil.models.TmdbMovie
 import com.example.monprofil.models.TmdbSerie
+import com.example.monprofil.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build();
-
-    val service = retrofit.create(TmdbAPI::class.java)
+@HiltViewModel
+class MainViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
     val movie = MutableStateFlow(TmdbMovie())
     val movies = MutableStateFlow<List<TmdbMovie>>(listOf())
     val serie = MutableStateFlow(TmdbSerie())
@@ -31,49 +27,49 @@ class MainViewModel : ViewModel() {
 
     fun getFilmsInitiaux() {
         viewModelScope.launch {
-            movies.value = service.lastmovies(API_KEY).results
+            movies.value = repo.api.lastmovies(API_KEY).results
         }
     }
 
     fun getSearchFilms() {
         viewModelScope.launch {
-            movies.value = service.searchmovies(API_KEY, searchTextState.value).results
+            movies.value = repo.api.searchmovies(API_KEY, searchTextState.value).results
         }
     }
 
     fun getSearchSeries() {
         viewModelScope.launch {
-            series.value = service.searchSeries(API_KEY, searchTextState.value).results
+            series.value = repo.api.searchSeries(API_KEY, searchTextState.value).results
         }
     }
 
     fun getSearchActors() {
         viewModelScope.launch {
-            actors.value = service.searchActors(API_KEY, searchTextState.value).results
+            actors.value = repo.api.searchActors(API_KEY, searchTextState.value).results
         }
     }
 
     fun getSeriesInitiaux() {
         viewModelScope.launch {
-            series.value = service.lastTv(API_KEY).results
+            series.value = repo.api.lastTv(API_KEY).results
         }
     }
 
     fun getActorsInitiaux() {
         viewModelScope.launch {
-            actors.value = service.lastPerson(API_KEY).results
+            actors.value = repo.api.lastPerson(API_KEY).results
         }
     }
 
     fun getFilmsDetails(idFilm: String) {
         viewModelScope.launch {
-            movie.value = service.movieDetails(idFilm, API_KEY, "credits")
+            movie.value = repo.api.movieDetails(idFilm, API_KEY, "credits")
         }
     }
 
     fun getSeriesDetails(idSerie: String) {
         viewModelScope.launch {
-            serie.value = service.serieDetails(idSerie, API_KEY, "credits")
+            serie.value = repo.api.serieDetails(idSerie, API_KEY, "credits")
         }
     }
 

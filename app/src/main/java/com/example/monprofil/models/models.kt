@@ -17,11 +17,13 @@ data class TmdbMovie(
     val genres: List<Genre> = listOf(),
     val backdrop_path: String? = "",
     val poster_path: String? = "",
-    val credits: Credits = Credits())
+    val credits: Credits = Credits(),
+    val isFav: Boolean = false)
 
 class TmdbActor(
     val profile_path: String = "",
-    val name: String = "")
+    val name: String = "",
+    val isFav: Boolean = false)
 
 data class TmdbSerie(
     val id: String = "",
@@ -33,6 +35,7 @@ data class TmdbSerie(
     val name: String = "",
     val overview: String = "",
     val poster_path: String = "",
+    val isFav: Boolean = false
 )
 
 data class Credits(
