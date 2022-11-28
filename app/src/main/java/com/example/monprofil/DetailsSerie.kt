@@ -29,7 +29,7 @@ fun DetailsSerie(
     if (idSerie != null) {
         viewmodel.getSeriesDetails(idSerie)
     }
-    val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(2) }
+    val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(3) }
     when (classeLargeur) {
         WindowWidthSizeClass.Compact-> {
             LazyVerticalGrid(columns = GridCells.Fixed(2),
@@ -39,8 +39,7 @@ fun DetailsSerie(
                     AsyncImage(
                             model = "https://image.tmdb.org/t/p/w500" + detailsSerie.value.backdrop_path,
                             contentDescription = "",
-                        modifier = Modifier.fillMaxSize()
-                            .padding(bottom = 20.dp),
+                        modifier = Modifier.padding(bottom = 20.dp),
                         contentScale = ContentScale.Crop
                         )
                 }
@@ -90,7 +89,7 @@ fun DetailsSerie(
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
                         .padding(top = 20.dp, bottom = 20.dp)) {
                         Text(
-                            text = "Sortie le : " + detailsSerie.value.first_air_date,
+                            text = "Sortie le " + detailsSerie.value.first_air_date,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .background(Color.White)
@@ -113,7 +112,7 @@ fun DetailsSerie(
                 }
                 item(span = span) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
-                        .padding(bottom = 20.dp)) {
+                        .padding(bottom = 10.dp)) {
                         Text(text = "Têtes d'affiche", fontSize = 20.sp, modifier = Modifier
                             .background(Color.White)
                             .padding(10.dp),
@@ -139,7 +138,111 @@ fun DetailsSerie(
             }
         }
         else -> {
-            Text(text = "PAGE DESCRIPTION SERIE")
+            LazyVerticalGrid(columns = GridCells.Fixed(3),
+                modifier = Modifier
+                    .background(Color.Black)) {
+                item(span = span) {
+                    AsyncImage(
+                        model = "https://image.tmdb.org/t/p/w500" + detailsSerie.value.backdrop_path,
+                        contentDescription = "",
+                        modifier = Modifier.fillMaxSize()
+                            .padding(bottom = 20.dp)
+                            .height(200.dp)
+                    )
+                }
+                item(span = span) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
+                        .padding(bottom = 20.dp)) {
+                        Text(text = detailsSerie.value.name, fontSize = 20.sp, modifier = Modifier
+                            .background(Color.White)
+                            .padding(10.dp),
+                            fontWeight = FontWeight.Bold)
+
+                    }
+                }
+                item(span = span) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.background(Color.White)
+                    ) {
+                        AsyncImage(
+                            model = "https://image.tmdb.org/t/p/w500" + detailsSerie.value.poster_path,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Column() {
+                            Text(
+                                text = "Synopsis",
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = detailsSerie.value.overview,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(10.dp)
+                            )
+                        }
+
+                    }
+                }
+                item(span = span) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
+                        .padding(top = 30.dp, bottom = 30.dp)) {
+                        Text(
+                            text = "Sortie le " + detailsSerie.value.first_air_date,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp)
+                        )
+                    }
+                }
+                item(span = span) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(bottom = 30.dp)
+                    ) {
+                        detailsSerie.value.genres.forEach { genre ->
+                            Text(text= genre.name, fontSize = 14.sp, modifier = Modifier
+                                .background(Color.White)
+                                .padding(10.dp))
+                        }
+                    }
+                }
+                item(span = span) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
+                        .padding(bottom = 10.dp)) {
+                        Text(text = "Têtes d'affiche", fontSize = 20.sp, modifier = Modifier
+                            .background(Color.White)
+                            .padding(10.dp),
+                            fontWeight = FontWeight.Bold)
+
+                    }
+                }
+                items(detailsSerie.value.credits.cast) { credit ->
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .background(Color.White)
+                    ) {
+                        AsyncImage(
+                            model = "https://image.tmdb.org/t/p/w500" + credit.profile_path,
+                            contentDescription = "Affiche du film"
+                        )
+                        Text(text = credit.name)
+                        Text(text = credit.character)
+                    }
+                }
+            }
         }
     }
 }

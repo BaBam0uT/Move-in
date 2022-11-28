@@ -2,6 +2,7 @@ package com.example.monprofil
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,10 +20,13 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -75,7 +79,7 @@ fun Films(
                     )
                 },
                 bottomBar = {
-                    BottomNavigation {
+                    BottomNavigation ( backgroundColor = colorResource(R.color.purple_700) ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentDestination = navBackStackEntry?.destination
                         items.forEach { screen ->
@@ -120,50 +124,66 @@ fun Films(
             }
         }
         else -> {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigation {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
-                        items.forEach { screen ->
-                            BottomNavigationItem(
-                                icon = { Icon(screen.resourceId, contentDescription = screen.description) },
-                                label = { Text(screen.label) },
-                                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                onClick = {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
+            Row {
+                NavigationRail ( backgroundColor = colorResource(R.color.purple_700) ) {
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentDestination = navBackStackEntry?.destination
+                    items.forEach { screen ->
+                        NavigationRailItem(
+                            icon = { Icon(screen.resourceId, contentDescription = screen.description) },
+                            label = { Text(screen.label) },
+                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            selectedContentColor = Color.White,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
-            ) {
-                Surface() {
-                    LazyHorizontalGrid(rows = GridCells.Fixed(2),
-                        modifier = Modifier.background(Color.Black))
-                    {
+                Column() {
+                    MainAppBar(
+                        searchWidgetState = searchWidgetState,
+                        searchTextState = searchTextState,
+                        type = "un film",
+                        onTextChange = {
+                            viewmodel.updateSearchTextState(newValue = it)
+                        },
+                        onCloseClicked = {
+                            viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED)
+                        },
+                        onSearchClicked = {
+                            Log.d("Searched Text", it)
+                            viewmodel.getSearchFilms()
+                        },
+                        onSearchTriggered = {
+                            viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        }
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier.background(Color.Black),
+                    ) {
                         items(films) { film ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
                                     .padding(20.dp)
                                     .background(Color.White)
                                     .padding(10.dp)
+                                    .clickable { navController.navigate("detailsFilm/${film.id}") },
                             ) {
                                 AsyncImage(
-                                    model = "https://image.tmdb.org/t/p/w500" + film.poster_path,
+                                    model = "https://image.tmdb.org/t/p/w500" + film.backdrop_path,
                                     contentDescription = "Affiche du film"
                                 )
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(text = film.title)
-                                    Text(text = film.release_date)
-                                }
+                                Text(text = film.title)
+                                Text(text = film.release_date)
                             }
                         }
                     }
@@ -226,10 +246,12 @@ fun DefaultAppBar(onSearchClicked: () -> Unit) {
                     tint = Color.White
                 )
             }
-        }
+        },
+        backgroundColor = colorResource(R.color.purple_700)
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchAppBar(
     text: String,
@@ -243,8 +265,9 @@ fun SearchAppBar(
             .fillMaxWidth()
             .height(56.dp),
         elevation = AppBarDefaults.TopAppBarElevation,
-        color = MaterialTheme.colors.primary
+        color = colorResource(R.color.purple_700)
     ) {
+        val keyboardController = LocalSoftwareKeyboardController.current
         TextField(modifier = Modifier
             .fillMaxWidth(),
             value = text,
@@ -266,11 +289,8 @@ fun SearchAppBar(
             leadingIcon = {
                 IconButton(
                     onClick = {
-                        if (text.isNotEmpty()) {
-                            onTextChange("")
-                        } else {
-                            onCloseClicked()
-                        }
+                        onTextChange("")
+                        onCloseClicked()
                     }
                 ) {
                     Icon(
@@ -286,6 +306,7 @@ fun SearchAppBar(
             keyboardActions = KeyboardActions(
                 onSearch = {
                     onSearchClicked(text)
+                    keyboardController?.hide()
                 }
             ),
             colors = TextFieldDefaults.textFieldColors(
