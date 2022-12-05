@@ -6,9 +6,9 @@ import androidx.room.Room
 import com.example.monprofil.converter.Converters
 import com.example.monprofil.database.AppDatabase
 import com.example.monprofil.database.FilmDao
-import com.example.monprofil.repository.FakeTmdbApi
+import com.example.monprofil.api.FakeTmdbApi
 import com.example.monprofil.repository.Repository
-import com.example.monprofil.repository.TmdbAPI
+import com.example.monprofil.api.TmdbAPI
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -40,12 +40,13 @@ object AppModule {
     }
     @Singleton
     @Provides
-    fun provideDb(@ApplicationContext context: Context)
+    fun provideDb(@ApplicationContext context: Context, converters : Converters)
             : FilmDao =
         Room.databaseBuilder(
             context,
             AppDatabase::class.java, "move_in_database"
         )
+            .addTypeConverter(converters)
             .fallbackToDestructiveMigration()
             .build().filmDao()
 
@@ -65,5 +66,5 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(@FakeApi api: TmdbAPI, db: FilmDao) = Repository(api, db)
+    fun provideRepository(@RealApi api: TmdbAPI, db: FilmDao) = Repository(api, db)
 }

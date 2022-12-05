@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.monprofil.SearchWidgetState
+import com.example.monprofil.entity.ActeurEntity
+import com.example.monprofil.entity.FilmEntity
+import com.example.monprofil.entity.SerieEntity
 import com.example.monprofil.models.TmdbActor
 import com.example.monprofil.models.TmdbMovie
 import com.example.monprofil.models.TmdbSerie
@@ -27,49 +30,103 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
     fun getFilmsInitiaux() {
         viewModelScope.launch {
-            movies.value = repo.api.lastmovies(API_KEY).results
+            movies.value = repo.lastmovies(API_KEY).results
         }
     }
 
     fun getSearchFilms() {
         viewModelScope.launch {
-            movies.value = repo.api.searchmovies(API_KEY, searchTextState.value).results
+            movies.value = repo.searchmovies(API_KEY, searchTextState.value).results
         }
     }
 
     fun getSearchSeries() {
         viewModelScope.launch {
-            series.value = repo.api.searchSeries(API_KEY, searchTextState.value).results
+            series.value = repo.searchSeries(API_KEY, searchTextState.value).results
         }
     }
 
     fun getSearchActors() {
         viewModelScope.launch {
-            actors.value = repo.api.searchActors(API_KEY, searchTextState.value).results
+            actors.value = repo.searchActors(API_KEY, searchTextState.value).results
         }
     }
 
     fun getSeriesInitiaux() {
         viewModelScope.launch {
-            series.value = repo.api.lastTv(API_KEY).results
+            series.value = repo.lastTv(API_KEY).results
         }
     }
 
     fun getActorsInitiaux() {
         viewModelScope.launch {
-            actors.value = repo.api.lastPerson(API_KEY).results
+            actors.value = repo.lastPerson(API_KEY).results
         }
     }
 
     fun getFilmsDetails(idFilm: String) {
         viewModelScope.launch {
-            movie.value = repo.api.movieDetails(idFilm, API_KEY, "credits")
+            movie.value = repo.movieDetails(idFilm, API_KEY, "credits")
         }
     }
 
     fun getSeriesDetails(idSerie: String) {
         viewModelScope.launch {
-            serie.value = repo.api.serieDetails(idSerie, API_KEY, "credits")
+            serie.value = repo.serieDetails(idSerie, API_KEY, "credits")
+        }
+    }
+
+    fun addFavMovie(movie: FilmEntity) {
+        viewModelScope.launch {
+            repo.insertFilm(movie)
+        }
+    }
+
+    fun addFavSerie(serie: SerieEntity) {
+        viewModelScope.launch {
+            repo.insertSerie(serie)
+        }
+    }
+
+    fun addFavActor(actor: ActeurEntity) {
+        viewModelScope.launch {
+            repo.insertActor(actor)
+        }
+    }
+
+    fun getFavMovies() {
+        viewModelScope.launch {
+            repo.getFavFilms()
+        }
+    }
+
+    fun getFavSeries() {
+        viewModelScope.launch {
+            repo.getFavSeries()
+        }
+    }
+
+    fun getFavActors() {
+        viewModelScope.launch {
+            repo.getFavActeurs()
+        }
+    }
+
+    fun deleteFavMovie(idMovie: String) {
+        viewModelScope.launch {
+            repo.deleteFilm(idMovie)
+        }
+    }
+
+    fun deleteFavSerie(idSerie: String) {
+        viewModelScope.launch {
+            repo.deleteSerie(idSerie)
+        }
+    }
+
+    fun deleteFavActor(idActor: String) {
+        viewModelScope.launch {
+            repo.deleteActeur(idActor)
         }
     }
 

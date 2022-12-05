@@ -1,4 +1,4 @@
-package com.example.monprofil.repository
+package com.example.monprofil.api
 
 import com.example.monprofil.models.*
 import com.squareup.moshi.JsonAdapter
