@@ -73,6 +73,9 @@ fun Actors(
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        },
+                        onFavTap = {
+                            viewmodel.getFavActors()
                         }
                     )
                 },
@@ -159,6 +162,9 @@ fun Actors(
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        },
+                        onFavTap = {
+                            viewmodel.getFavActors()
                         }
                     )
                     LazyVerticalGrid(columns = GridCells.Fixed(3),

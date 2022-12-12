@@ -18,9 +18,10 @@ data class TmdbMovie(
     val backdrop_path: String? = "",
     val poster_path: String? = "",
     val credits: Credits = Credits(),
-    val isFav: Boolean = false)
+    val isFav: Boolean = false
+)
 
-class TmdbActor(
+data class TmdbActor(
     val profile_path: String = "",
     val name: String = "",
     val isFav: Boolean = false

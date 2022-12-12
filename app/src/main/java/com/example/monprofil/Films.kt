@@ -2,7 +2,6 @@ package com.example.monprofil
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,7 +14,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
@@ -36,6 +38,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
+import com.example.monprofil.entity.FilmEntity
 import com.example.monprofil.viewmodels.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -75,6 +78,9 @@ fun Films(
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        },
+                        onFavTap = {
+                            viewmodel.getFavMovies()
                         }
                     )
                 },
@@ -107,15 +113,40 @@ fun Films(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .padding(20.dp)
+                                .padding(10.dp)
                                 .background(Color.White)
                                 .padding(10.dp)
                                 .clickable { navController.navigate("detailsFilm/${film.id}") },
                         ) {
-                            AsyncImage(
-                                model = "https://image.tmdb.org/t/p/w500" + film.poster_path,
-                                contentDescription = "Affiche du film"
-                            )
+                            Box {
+                                AsyncImage(
+                                    model = "https://image.tmdb.org/t/p/w500" + film.poster_path,
+                                    contentDescription = "Affiche du film"
+                                )
+                                if(film.isFav) {
+                                    IconButton(onClick = {
+                                        viewmodel.deleteFavMovie(film.id)
+                                    }) {
+                                        Icon(imageVector = Icons.Outlined.Favorite,
+                                            contentDescription = "Favorite Icon",
+                                            tint = Color.Red,
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .padding(5.dp))
+                                    }
+                                } else {
+                                    IconButton(onClick = {
+                                        viewmodel.addFavMovie(FilmEntity(fiche = film, id = film.id))
+                                    }) {
+                                        Icon(imageVector = Icons.Outlined.FavoriteBorder,
+                                            contentDescription = "Favorite Icon",
+                                            tint = Color.White,
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .padding(5.dp))
+                                    }
+                                }
+                            }
                             Text(text = film.title)
                             Text(text = film.release_date)
                         }
@@ -163,6 +194,9 @@ fun Films(
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        },
+                        onFavTap = {
+                            viewmodel.getFavMovies()
                         }
                     )
                     LazyVerticalGrid(
@@ -208,12 +242,14 @@ fun MainAppBar(
     onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
-    onSearchTriggered: () -> Unit
+    onSearchTriggered: () -> Unit,
+    onFavTap: () -> Unit
 ) {
     when (searchWidgetState) {
         SearchWidgetState.CLOSED -> {
             DefaultAppBar(
-                onSearchClicked = onSearchTriggered
+                onSearchClicked = onSearchTriggered,
+                onFavTap = onFavTap
             )
         }
         SearchWidgetState.OPENED -> {
@@ -229,7 +265,7 @@ fun MainAppBar(
 }
 
 @Composable
-fun DefaultAppBar(onSearchClicked: () -> Unit) {
+fun DefaultAppBar(onSearchClicked: () -> Unit, onFavTap: () -> Unit) {
     TopAppBar(
         title = {
             Text(
@@ -243,6 +279,13 @@ fun DefaultAppBar(onSearchClicked: () -> Unit) {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = "Search Icon",
+                    tint = Color.White
+                )
+            }
+            IconButton(onClick = { onFavTap() }) {
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite Icon",
                     tint = Color.White
                 )
             }

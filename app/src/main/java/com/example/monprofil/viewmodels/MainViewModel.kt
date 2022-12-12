@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
     val movie = MutableStateFlow(TmdbMovie())
-    val movies = MutableStateFlow<List<TmdbMovie>>(listOf())
+    var movies = MutableStateFlow<List<TmdbMovie>>(listOf())
     val serie = MutableStateFlow(TmdbSerie())
     val series = MutableStateFlow<List<TmdbSerie>>(listOf())
     val actors = MutableStateFlow<List<TmdbActor>>(listOf())
@@ -30,7 +30,28 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
     fun getFilmsInitiaux() {
         viewModelScope.launch {
-            movies.value = repo.lastmovies(API_KEY).results
+            val moviesFav = repo.getFavFilms()
+            movies.value = repo.lastmovies(API_KEY).results.map { film ->
+                if (moviesFav.contains(moviesFav.find{element -> element.fiche == film })) film.copy(isFav = true) else film
+            }
+        }
+    }
+
+    fun getSeriesInitiaux() {
+        viewModelScope.launch {
+            val seriesFav = repo.getFavSeries()
+            series.value = repo.lastTv(API_KEY).results.map { serie ->
+                if (seriesFav.contains(seriesFav.find{element -> element.fiche == serie })) serie.copy(isFav = true) else serie
+            }
+        }
+    }
+
+    fun getActorsInitiaux() {
+        viewModelScope.launch {
+            val actorsFav = repo.getFavActeurs()
+            actors.value = repo.lastPerson(API_KEY).results.map { actor ->
+                if (actorsFav.contains(actorsFav.find{element -> element.fiche == actor })) actor.copy(isFav = true) else actor
+            }
         }
     }
 
@@ -52,18 +73,6 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
         }
     }
 
-    fun getSeriesInitiaux() {
-        viewModelScope.launch {
-            series.value = repo.lastTv(API_KEY).results
-        }
-    }
-
-    fun getActorsInitiaux() {
-        viewModelScope.launch {
-            actors.value = repo.lastPerson(API_KEY).results
-        }
-    }
-
     fun getFilmsDetails(idFilm: String) {
         viewModelScope.launch {
             movie.value = repo.movieDetails(idFilm, API_KEY, "credits")
@@ -80,6 +89,7 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
         viewModelScope.launch {
             repo.insertFilm(movie)
         }
+        getFilmsInitiaux()
     }
 
     fun addFavSerie(serie: SerieEntity) {
@@ -96,19 +106,29 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
     fun getFavMovies() {
         viewModelScope.launch {
-            repo.getFavFilms()
+            println("HALLO")
+            movies = MutableStateFlow(listOf())
+            repo.getFavFilms().map {
+                movies.value += it.fiche
+            }
         }
     }
 
     fun getFavSeries() {
         viewModelScope.launch {
-            repo.getFavSeries()
+            MutableStateFlow<List<TmdbSerie>>(listOf())
+            repo.getFavSeries().map {
+                series.value += it.fiche
+            }
         }
     }
 
     fun getFavActors() {
         viewModelScope.launch {
-            repo.getFavActeurs()
+            MutableStateFlow<List<TmdbActor>>(listOf())
+            repo.getFavActeurs().map {
+                actors.value += it.fiche
+            }
         }
     }
 
@@ -116,6 +136,7 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
         viewModelScope.launch {
             repo.deleteFilm(idMovie)
         }
+        getFilmsInitiaux()
     }
 
     fun deleteFavSerie(idSerie: String) {

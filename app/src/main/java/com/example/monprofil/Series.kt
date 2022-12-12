@@ -70,6 +70,9 @@ fun Series(
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        },
+                        onFavTap = {
+                            viewmodel.getFavSeries()
                         }
                     )
                 },
@@ -158,6 +161,9 @@ fun Series(
                         },
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                        },
+                        onFavTap = {
+                            viewmodel.getFavSeries()
                         }
                     )
                     LazyVerticalGrid(columns = GridCells.Fixed(3),
