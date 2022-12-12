@@ -1,8 +1,5 @@
-package com.example.monprofil
+package com.example.monprofil.views
 
-import android.util.Log
-import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,10 +11,7 @@ import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,8 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.monprofil.ui.theme.MonProfilTheme
-import com.example.monprofil.viewmodels.MainViewModel
+import com.example.monprofil.R
 
 
 @Composable
@@ -49,7 +42,7 @@ fun Screen(classes: WindowSizeClass, navController: NavHostController) {
                 Presentation()
                 Infos()
                 Spacer(Modifier.height(20.dp))
-                Demarrer { navController.navigate("films") }
+                Demarrer { navController.navigate("movies") }
             }
         }
         else -> {
@@ -66,7 +59,7 @@ fun Screen(classes: WindowSizeClass, navController: NavHostController) {
                 ) {
                     Infos()
                     Spacer(Modifier.height(20.dp))
-                    Demarrer { navController.navigate("films") }
+                    Demarrer { navController.navigate("movies") }
                 }
             }
         }

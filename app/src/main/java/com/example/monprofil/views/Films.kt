@@ -1,4 +1,4 @@
-package com.example.monprofil
+package com.example.monprofil.views
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -6,38 +6,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
+import com.example.monprofil.R
 import com.example.monprofil.entity.FilmEntity
 import com.example.monprofil.viewmodels.MainViewModel
 
@@ -48,17 +37,17 @@ fun Films(
     viewmodel: MainViewModel,
     navController: NavHostController
 ) {
-    val classeLargeur = classes.widthSizeClass
-    val films by viewmodel.movies.collectAsState()
     val items = listOf(
-        Screen("films", painterResource(id = R.drawable.movies), "Icone Films", "Films") ,
-        Screen("series", painterResource(id = R.drawable.series), "Icone Series", "Séries"),
-        Screen("actors", painterResource(id = R.drawable.actors), "Icone Acteurs", "Acteurs")
+        Screen("movies", painterResource(id = R.drawable.movies), "Movies Icon", "Movies"),
+        Screen("series", painterResource(id = R.drawable.series), "Series Icon", "Series"),
+        Screen("actors", painterResource(id = R.drawable.actors), "Actors Icon", "Actors"
+        )
     )
+    val films by viewmodel.movies.collectAsState()
+    viewmodel.getFilmsInitiaux()
     val searchWidgetState by viewmodel.searchWidgetState
     val searchTextState by viewmodel.searchTextState
-    viewmodel.getFilmsInitiaux()
-    when (classeLargeur) {
+    when (classes.widthSizeClass) {
         WindowWidthSizeClass.Compact-> {
             Scaffold(
                 topBar = {
@@ -79,9 +68,7 @@ fun Films(
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
                         },
-                        onFavTap = {
-                            viewmodel.getFavMovies()
-                        }
+                        viewmodel = viewmodel
                     )
                 },
                 bottomBar = {
@@ -90,10 +77,11 @@ fun Films(
                         val currentDestination = navBackStackEntry?.destination
                         items.forEach { screen ->
                             BottomNavigationItem(
-                                icon = { Icon(screen.resourceId, contentDescription = screen.description) },
-                                label = { Text(screen.label) },
+                                icon = { Icon(screen.resourceId, contentDescription = screen.description, tint = Color.White) },
+                                label = { Text(screen.label, color = Color.White) },
                                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                                 onClick = {
+                                    viewmodel.isFavList = false
                                     navController.navigate(screen.route) {
                                         popUpTo(navController.graph.findStartDestination().id) {
                                             saveState = true
@@ -113,9 +101,9 @@ fun Films(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .padding(10.dp)
+                                .padding(5.dp)
                                 .background(Color.White)
-                                .padding(10.dp)
+                                .padding(5.dp)
                                 .clickable { navController.navigate("detailsFilm/${film.id}") },
                         ) {
                             Box {
@@ -123,32 +111,33 @@ fun Films(
                                     model = "https://image.tmdb.org/t/p/w500" + film.poster_path,
                                     contentDescription = "Affiche du film"
                                 )
-                                if(film.isFav) {
-                                    IconButton(onClick = {
+                                IconButton(onClick = {
+                                    if(film.isFav) {
                                         viewmodel.deleteFavMovie(film.id)
-                                    }) {
-                                        Icon(imageVector = Icons.Outlined.Favorite,
-                                            contentDescription = "Favorite Icon",
-                                            tint = Color.Red,
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .padding(5.dp))
-                                    }
-                                } else {
-                                    IconButton(onClick = {
+                                        if(viewmodel.isFavList) {
+                                            viewmodel.getFavMovies()
+                                        } else {
+                                            viewmodel.getFilmsInitiaux()
+                                        }
+                                    } else {
                                         viewmodel.addFavMovie(FilmEntity(fiche = film, id = film.id))
-                                    }) {
-                                        Icon(imageVector = Icons.Outlined.FavoriteBorder,
-                                            contentDescription = "Favorite Icon",
-                                            tint = Color.White,
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .padding(5.dp))
+                                        if(viewmodel.isFavList) {
+                                            viewmodel.getFavMovies()
+                                        } else {
+                                            viewmodel.getFilmsInitiaux()
+                                        }
                                     }
+                                }) {
+                                    Icon(imageVector = Icons.Outlined.Favorite,
+                                        contentDescription = "Favorite Icon",
+                                        tint = if (film.isFav) Color.Red else Color.White,
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .padding(5.dp))
                                 }
                             }
-                            Text(text = film.title)
-                            Text(text = film.release_date)
+                            Text(text = film.title, color = Color.Black)
+                            Text(text = film.release_date, color = Color.Black)
                         }
                     }
                 }
@@ -195,9 +184,7 @@ fun Films(
                         onSearchTriggered = {
                             viewmodel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
                         },
-                        onFavTap = {
-                            viewmodel.getFavMovies()
-                        }
+                        viewmodel = viewmodel
                     )
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
@@ -226,136 +213,3 @@ fun Films(
         }
     }
 }
-
-class Screen(val route: String, val resourceId: Painter, val description: String, val label: String)
-
-enum class SearchWidgetState {
-    OPENED,
-    CLOSED
-}
-
-@Composable
-fun MainAppBar(
-    searchWidgetState: SearchWidgetState,
-    searchTextState: String,
-    type: String,
-    onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
-    onSearchTriggered: () -> Unit,
-    onFavTap: () -> Unit
-) {
-    when (searchWidgetState) {
-        SearchWidgetState.CLOSED -> {
-            DefaultAppBar(
-                onSearchClicked = onSearchTriggered,
-                onFavTap = onFavTap
-            )
-        }
-        SearchWidgetState.OPENED -> {
-            SearchAppBar(
-                text = searchTextState,
-                type = type,
-                onTextChange = onTextChange,
-                onCloseClicked = onCloseClicked,
-                onSearchClicked = onSearchClicked
-            )
-        }
-    }
-}
-
-@Composable
-fun DefaultAppBar(onSearchClicked: () -> Unit, onFavTap: () -> Unit) {
-    TopAppBar(
-        title = {
-            Text(
-                text = "Move In"
-            )
-        },
-        actions = {
-            IconButton(
-                onClick = { onSearchClicked() }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search Icon",
-                    tint = Color.White
-                )
-            }
-            IconButton(onClick = { onFavTap() }) {
-                Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite Icon",
-                    tint = Color.White
-                )
-            }
-        },
-        backgroundColor = colorResource(R.color.purple_700)
-    )
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun SearchAppBar(
-    text: String,
-    type: String,
-    onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
-    onSearchClicked: (String) -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        elevation = AppBarDefaults.TopAppBarElevation,
-        color = colorResource(R.color.purple_700)
-    ) {
-        val keyboardController = LocalSoftwareKeyboardController.current
-        TextField(modifier = Modifier
-            .fillMaxWidth(),
-            value = text,
-            onValueChange = {
-                onTextChange(it)
-            },
-            textStyle = TextStyle(
-                fontSize = MaterialTheme.typography.subtitle1.fontSize
-            ),
-            placeholder = {
-                Text(
-                    modifier = Modifier
-                        .alpha(ContentAlpha.medium),
-                    text = "Rechercher $type...",
-                    color = Color.White
-                )
-            },
-            singleLine = true,
-            leadingIcon = {
-                IconButton(
-                    onClick = {
-                        onTextChange("")
-                        onCloseClicked()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Search Icon",
-                        tint = Color.White
-                    )
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    onSearchClicked(text)
-                    keyboardController?.hide()
-                }
-            ),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.Transparent,
-                cursorColor = Color.White.copy(alpha = ContentAlpha.medium)
-            ))
-    }
-}
-

@@ -5,8 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
-import com.example.monprofil.SearchWidgetState
+import com.example.monprofil.views.SearchWidgetState
 import com.example.monprofil.entity.ActeurEntity
 import com.example.monprofil.entity.FilmEntity
 import com.example.monprofil.entity.SerieEntity
@@ -27,7 +26,7 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
     val series = MutableStateFlow<List<TmdbSerie>>(listOf())
     val actors = MutableStateFlow<List<TmdbActor>>(listOf())
     val API_KEY = "f35478e744bbf37fb49a1635fe867c3a"
-
+    var isFavList = false;
     fun getFilmsInitiaux() {
         viewModelScope.launch {
             val moviesFav = repo.getFavFilms()
@@ -89,7 +88,6 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
         viewModelScope.launch {
             repo.insertFilm(movie)
         }
-        getFilmsInitiaux()
     }
 
     fun addFavSerie(serie: SerieEntity) {
@@ -106,28 +104,27 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
     fun getFavMovies() {
         viewModelScope.launch {
-            println("HALLO")
-            movies = MutableStateFlow(listOf())
+            movies.value = listOf()
             repo.getFavFilms().map {
-                movies.value += it.fiche
+                movies.value += it.fiche.copy(isFav = true)
             }
         }
     }
 
     fun getFavSeries() {
         viewModelScope.launch {
-            MutableStateFlow<List<TmdbSerie>>(listOf())
+            series.value = listOf()
             repo.getFavSeries().map {
-                series.value += it.fiche
+                series.value += it.fiche.copy(isFav = true)
             }
         }
     }
 
     fun getFavActors() {
         viewModelScope.launch {
-            MutableStateFlow<List<TmdbActor>>(listOf())
+            actors.value = listOf()
             repo.getFavActeurs().map {
-                actors.value += it.fiche
+                actors.value += it.fiche.copy(isFav = true)
             }
         }
     }
@@ -136,7 +133,6 @@ class MainViewModel @Inject constructor(private val repo: Repository) : ViewMode
         viewModelScope.launch {
             repo.deleteFilm(idMovie)
         }
-        getFilmsInitiaux()
     }
 
     fun deleteFavSerie(idSerie: String) {

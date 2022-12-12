@@ -22,6 +22,7 @@ data class TmdbMovie(
 )
 
 data class TmdbActor(
+    val id: String = "",
     val profile_path: String = "",
     val name: String = "",
     val isFav: Boolean = false

@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.monprofil.ui.theme.MonProfilTheme
 import com.example.monprofil.viewmodels.MainViewModel
+import com.example.monprofil.views.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 val viewmodel: MainViewModel by viewModels()
                 NavHost(navController = navController, startDestination = "profile") {
                     composable("profile") { Screen(windowSizeClass, navController) }
-                    composable("films") { Films(windowSizeClass, viewmodel, navController) }
+                    composable("movies") { Films(windowSizeClass, viewmodel, navController) }
                     composable("series") { Series(windowSizeClass, viewmodel, navController) }
                     composable("actors") { Actors(windowSizeClass, viewmodel, navController) }
                     composable("detailsFilm/{idFilm}") { backStackEntry -> DetailsFilm(windowSizeClass, viewmodel, backStackEntry.arguments?.getString("idFilm")) }

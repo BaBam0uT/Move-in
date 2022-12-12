@@ -1,4 +1,4 @@
-package com.example.monprofil
+package com.example.monprofil.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
