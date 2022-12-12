@@ -17,7 +17,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -28,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.example.monprofil.R
 import com.example.monprofil.entity.FilmEntity
+import com.example.monprofil.models.TmdbMovie
 import com.example.monprofil.viewmodels.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -47,6 +47,8 @@ fun Films(
     viewmodel.getFilmsInitiaux()
     val searchWidgetState by viewmodel.searchWidgetState
     val searchTextState by viewmodel.searchTextState
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
     when (classes.widthSizeClass) {
         WindowWidthSizeClass.Compact-> {
             Scaffold(
@@ -73,8 +75,6 @@ fun Films(
                 },
                 bottomBar = {
                     BottomNavigation ( backgroundColor = colorResource(R.color.purple_700) ) {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
                         items.forEach { screen ->
                             BottomNavigationItem(
                                 icon = { Icon(screen.resourceId, contentDescription = screen.description, tint = Color.White) },
@@ -98,46 +98,12 @@ fun Films(
                 LazyVerticalGrid(columns = GridCells.Fixed(2),
                     modifier = Modifier.background(Color.Black),) {
                     items(films) { film ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .background(Color.White)
-                                .padding(5.dp)
-                                .clickable { navController.navigate("detailsFilm/${film.id}") },
-                        ) {
-                            Box {
-                                AsyncImage(
-                                    model = "https://image.tmdb.org/t/p/w500" + film.poster_path,
-                                    contentDescription = "Affiche du film"
-                                )
-                                IconButton(onClick = {
-                                    if(film.isFav) {
-                                        viewmodel.deleteFavMovie(film.id)
-                                        if(viewmodel.isFavList) {
-                                            viewmodel.getFavMovies()
-                                        } else {
-                                            viewmodel.getFilmsInitiaux()
-                                        }
-                                    } else {
-                                        viewmodel.addFavMovie(FilmEntity(fiche = film, id = film.id))
-                                        if(viewmodel.isFavList) {
-                                            viewmodel.getFavMovies()
-                                        } else {
-                                            viewmodel.getFilmsInitiaux()
-                                        }
-                                    }
-                                }) {
-                                    Icon(imageVector = Icons.Outlined.Favorite,
-                                        contentDescription = "Favorite Icon",
-                                        tint = if (film.isFav) Color.Red else Color.White,
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .padding(5.dp))
-                                }
-                            }
-                            Text(text = film.title, color = Color.Black)
-                            Text(text = film.release_date, color = Color.Black)
+                        film.poster_path?.let { it1 ->
+                            MovieCard(viewmodel = viewmodel,
+                                navController = navController,
+                                film = film,
+                                path = it1
+                            )
                         }
                     }
                 }
@@ -146,15 +112,14 @@ fun Films(
         else -> {
             Row {
                 NavigationRail ( backgroundColor = colorResource(R.color.purple_700) ) {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentDestination = navBackStackEntry?.destination
                     items.forEach { screen ->
                         NavigationRailItem(
-                            icon = { Icon(screen.resourceId, contentDescription = screen.description) },
-                            label = { Text(screen.label) },
+                            icon = { Icon(screen.resourceId, contentDescription = screen.description, tint = Color.White) },
+                            label = { Text(screen.label, color = Color.White) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             selectedContentColor = Color.White,
                             onClick = {
+                                viewmodel.isFavList = false
                                 navController.navigate(screen.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -191,25 +156,67 @@ fun Films(
                         modifier = Modifier.background(Color.Black),
                     ) {
                         items(films) { film ->
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier
-                                    .padding(20.dp)
-                                    .background(Color.White)
-                                    .padding(10.dp)
-                                    .clickable { navController.navigate("detailsFilm/${film.id}") },
-                            ) {
-                                AsyncImage(
-                                    model = "https://image.tmdb.org/t/p/w500" + film.backdrop_path,
-                                    contentDescription = "Affiche du film"
+                            film.backdrop_path?.let {
+                                MovieCard(viewmodel = viewmodel,
+                                    navController = navController,
+                                    film = film,
+                                    path = it
                                 )
-                                Text(text = film.title)
-                                Text(text = film.release_date)
                             }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun MovieCard(viewmodel: MainViewModel, navController: NavHostController, film: TmdbMovie, path: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(5.dp)
+            .background(Color.White)
+            .padding(5.dp)
+            .clickable { navController.navigate("detailsFilm/${film.id}") },
+    ) {
+        Box {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w500$path",
+                contentDescription = "Affiche du film"
+            )
+            FavoriteMovieIcon(viewmodel = viewmodel, film = film)
+        }
+        Text(text = film.title, color = Color.Black)
+        Text(text = film.release_date, color = Color.Black)
+    }
+}
+
+@Composable
+fun FavoriteMovieIcon(viewmodel: MainViewModel, film: TmdbMovie) {
+    IconButton(onClick = {
+        if(film.isFav) {
+            viewmodel.deleteFavMovie(film.id)
+            if(viewmodel.isFavList) {
+                viewmodel.getFavMovies()
+            } else {
+                viewmodel.getFilmsInitiaux()
+            }
+        } else {
+            viewmodel.addFavMovie(FilmEntity(fiche = film, id = film.id))
+            if(viewmodel.isFavList) {
+                viewmodel.getFavMovies()
+            } else {
+                viewmodel.getFilmsInitiaux()
+            }
+        }
+    }) {
+        Icon(imageVector = Icons.Outlined.Favorite,
+            contentDescription = "Favorite Icon",
+            tint = if (film.isFav) Color.Red else Color.White,
+            modifier = Modifier
+                .size(40.dp)
+                .padding(5.dp))
     }
 }

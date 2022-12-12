@@ -89,7 +89,7 @@ fun DetailsSerie(
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
                         .padding(top = 20.dp, bottom = 20.dp)) {
                         Text(
-                            text = "Sortie le " + detailsSerie.value.first_air_date,
+                            text = "Released on " + detailsSerie.value.first_air_date,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .background(Color.White)
@@ -113,7 +113,7 @@ fun DetailsSerie(
                 item(span = span) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
                         .padding(bottom = 10.dp)) {
-                        Text(text = "Têtes d'affiche", fontSize = 20.sp, modifier = Modifier
+                        Text(text = "Headliners", fontSize = 20.sp, modifier = Modifier
                             .background(Color.White)
                             .padding(10.dp),
                             fontWeight = FontWeight.Bold)
@@ -196,7 +196,7 @@ fun DetailsSerie(
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
                         .padding(top = 30.dp, bottom = 30.dp)) {
                         Text(
-                            text = "Sortie le " + detailsSerie.value.first_air_date,
+                            text = "Released on " + detailsSerie.value.first_air_date,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .background(Color.White)
@@ -220,7 +220,7 @@ fun DetailsSerie(
                 item(span = span) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.background(Color.Black)
                         .padding(bottom = 10.dp)) {
-                        Text(text = "Têtes d'affiche", fontSize = 20.sp, modifier = Modifier
+                        Text(text = "Headliners", fontSize = 20.sp, modifier = Modifier
                             .background(Color.White)
                             .padding(10.dp),
                             fontWeight = FontWeight.Bold)

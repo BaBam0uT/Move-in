@@ -23,21 +23,21 @@ data class TmdbMovie(
 
 data class TmdbActor(
     val id: String = "",
-    val profile_path: String = "",
+    val profile_path: String? = "",
     val name: String = "",
     val isFav: Boolean = false
 )
 
 data class TmdbSerie(
     val id: String = "",
-    val backdrop_path: String = "",
+    val backdrop_path: String? = "",
     val credits: Credits = Credits(),
     val first_air_date: String = "",
     val genres: List<Genre> = listOf(),
     val origin_country: List<String> = listOf(),
     val name: String = "",
     val overview: String = "",
-    val poster_path: String = "",
+    val poster_path: String? = "",
     val isFav: Boolean = false
 )
 

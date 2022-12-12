@@ -92,7 +92,7 @@ fun DetailsFilm(
                         .background(Color.Black)
                         .padding(top = 20.dp, bottom = 20.dp)) {
                         Text(
-                            text = "Sortie le " + detailsFilm.value.release_date,
+                            text = "Released on " + detailsFilm.value.release_date,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .background(Color.White)
@@ -118,7 +118,7 @@ fun DetailsFilm(
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                         .background(Color.Black)
                         .padding(bottom = 10.dp)) {
-                        Text(text = "Têtes d'affiche", fontSize = 20.sp, modifier = Modifier
+                        Text(text = "Headliners", fontSize = 20.sp, modifier = Modifier
                             .background(Color.White)
                             .padding(10.dp),
                             fontWeight = FontWeight.Bold)
@@ -203,7 +203,7 @@ fun DetailsFilm(
                         .background(Color.Black)
                         .padding(top = 30.dp, bottom = 30.dp)) {
                         Text(
-                            text = "Sortie le " + detailsFilm.value.release_date,
+                            text = "Released on " + detailsFilm.value.release_date,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .background(Color.White)
@@ -229,7 +229,7 @@ fun DetailsFilm(
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                         .background(Color.Black)
                         .padding(bottom = 10.dp)) {
-                        Text(text = "Têtes d'affiche", fontSize = 20.sp, modifier = Modifier
+                        Text(text = "Headliners", fontSize = 20.sp, modifier = Modifier
                             .background(Color.White)
                             .padding(10.dp),
                             fontWeight = FontWeight.Bold)
