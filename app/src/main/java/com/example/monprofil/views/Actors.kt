@@ -80,7 +80,9 @@ fun Actors(
                         items.forEach { screen ->
                             BottomNavigationItem(
                                 icon = { Icon(screen.resourceId, contentDescription = screen.description, tint = Color.White) },
-                                label = { Text(screen.label, color = Color.White) },
+                                selectedContentColor = Color.White,
+                                unselectedContentColor = Color.Black,
+                                label = { Text(screen.label) },
                                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                                 onClick = {
                                     viewmodel.isFavList = false
@@ -116,9 +118,10 @@ fun Actors(
                     items.forEach { screen ->
                         NavigationRailItem(
                             icon = { Icon(screen.resourceId, contentDescription = screen.description, tint = Color.White) },
-                            label = { Text(screen.label, color = Color.White) },
+                            label = { Text(screen.label) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             selectedContentColor = Color.White,
+                            unselectedContentColor = Color.Black,
                             onClick = {
                                 viewmodel.isFavList = false
                                 navController.navigate(screen.route) {
