@@ -1,12 +1,12 @@
 package com.example.movein.repository
 
 import com.example.movein.apis.TmdbApi
-import com.example.movein.database.FilmDao
+import com.example.movein.database.MovieDao
 import com.example.movein.entity.ActorEntity
 import com.example.movein.entity.MovieEntity
 import com.example.movein.entity.SerieEntity
 
-class Repository(private val api: TmdbApi, private val db: FilmDao) {
+class Repository(private val api: TmdbApi, private val db: MovieDao) {
     // All methods that use TmdbApi
     suspend fun trendingMovies(apiKey: String) = api.trendingMovies(apiKey)
     suspend fun trendingSeries(apiKey: String) = api.trendingSeries(apiKey)

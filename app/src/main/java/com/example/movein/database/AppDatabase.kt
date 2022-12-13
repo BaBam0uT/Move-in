@@ -6,8 +6,8 @@ import com.example.movein.entity.ActorEntity
 import com.example.movein.entity.MovieEntity
 import com.example.movein.entity.SerieEntity
 
-@Database(entities = [MovieEntity::class, SerieEntity::class, ActorEntity::class], version = 2)
+@Database(entities = [MovieEntity::class, SerieEntity::class, ActorEntity::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun filmDao(): FilmDao
+    abstract fun filmDao(): MovieDao
 }

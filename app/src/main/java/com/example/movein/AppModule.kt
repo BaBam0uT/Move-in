@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.movein.converters.Converters
 import com.example.movein.database.AppDatabase
-import com.example.movein.database.FilmDao
+import com.example.movein.database.MovieDao
 import com.example.movein.apis.FakeTmdbApi
 import com.example.movein.repository.Repository
 import com.example.movein.apis.TmdbApi
@@ -39,7 +39,7 @@ object AppModule {
     @Singleton
     @Provides
     fun provideDb(@ApplicationContext context: Context, converters : Converters)
-            : FilmDao =
+            : MovieDao =
         Room.databaseBuilder(
             context,
             AppDatabase::class.java, "move_in_database"
@@ -64,5 +64,5 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(@RealApi api: TmdbApi, db: FilmDao) = Repository(api, db)
+    fun provideRepository(@RealApi api: TmdbApi, db: MovieDao) = Repository(api, db)
 }

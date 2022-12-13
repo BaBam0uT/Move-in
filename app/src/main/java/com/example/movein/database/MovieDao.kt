@@ -9,7 +9,7 @@ import com.example.movein.entity.MovieEntity
 import com.example.movein.entity.SerieEntity
 
 @Dao
-interface FilmDao {
+interface MovieDao {
     // Get favorite movies from database
     @Query("SELECT * FROM movieentity")
     suspend fun getFavMovies(): List<MovieEntity>
