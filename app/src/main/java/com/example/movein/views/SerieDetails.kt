@@ -3,7 +3,7 @@ package com.example.movein.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.material.*
+import androidx.compose.material.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -17,52 +17,50 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.movein.models.Cast
-import com.example.movein.models.TmdbMovie
-import com.example.movein.viewmodels.MainViewModel
+import com.example.movein.models.TmdbSerie
+import com.example.movein.viewmodel.MainViewModel
 
 @Composable
-fun DetailsFilm(
+fun DetailsSerie(
     classes: WindowSizeClass,
-    viewmodel: MainViewModel,
-    idFilm: String?
+    viewModel: MainViewModel,
+    idSerie: String?
 ) {
-    val classeLargeur = classes.widthSizeClass
-    val detailsFilm = viewmodel.movie.collectAsState()
-    if (idFilm != null) {
-        viewmodel.getFilmsDetails(idFilm)
+    val serieDetails = viewModel.serie.collectAsState()
+    if (idSerie != null) {
+        viewModel.getSeriesDetails(idSerie)
     }
     val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(3) }
-    when (classeLargeur) {
+    when (classes.widthSizeClass) {
         WindowWidthSizeClass.Compact-> {
             LazyVerticalGrid(columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .background(Color.Black)) {
                 item(span = span) {
                     AsyncImage(
-                        model = "https://image.tmdb.org/t/p/w500" + detailsFilm.value.backdrop_path,
-                        contentDescription = "",
+                        model = "https://image.tmdb.org/t/p/w500" + serieDetails.value.backdrop_path,
+                        contentDescription = "Backdrop Image",
                         modifier = Modifier
                             .padding(bottom = 20.dp),
                         contentScale = ContentScale.Crop
                     )
                 }
                 item(span = span) {
-                    Titre(detailsFilm = detailsFilm)
+                    Titre(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    Synopsis(detailsFilm = detailsFilm)
+                    Synopsis(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    ReleasedDate(detailsFilm = detailsFilm)
+                    ReleasedDate(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    Genres(detailsFilm = detailsFilm)
+                    Genres(detailsSerie = serieDetails)
                 }
                 item(span = span) {
                     Headliners()
                 }
-                items(detailsFilm.value.credits.cast) { credit ->
+                items(serieDetails.value.credits.cast) { credit ->
                     HeadlinersList(credit = credit)
                 }
             }
@@ -73,29 +71,29 @@ fun DetailsFilm(
                     .background(Color.Black)) {
                 item(span = span) {
                     AsyncImage(
-                        model = "https://image.tmdb.org/t/p/w500" + detailsFilm.value.backdrop_path,
-                        contentDescription = "",
+                        model = "https://image.tmdb.org/t/p/w500" + serieDetails.value.backdrop_path,
+                        contentDescription = "Backdrop Image",
                         modifier = Modifier
                             .padding(bottom = 20.dp)
                             .height(200.dp)
                     )
                 }
                 item(span = span) {
-                    Titre(detailsFilm = detailsFilm)
+                    Titre(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    Synopsis(detailsFilm = detailsFilm)
+                    Synopsis(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    ReleasedDate(detailsFilm = detailsFilm)
+                    ReleasedDate(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    Genres(detailsFilm = detailsFilm)
+                    Genres(detailsSerie = serieDetails)
                 }
                 item(span = span) {
                     Headliners()
                 }
-                items(detailsFilm.value.credits.cast) { credit ->
+                items(serieDetails.value.credits.cast) { credit ->
                     HeadlinersList(credit = credit)
                 }
             }
@@ -104,11 +102,11 @@ fun DetailsFilm(
 }
 
 @Composable
-fun Titre(detailsFilm: State<TmdbMovie>) {
+fun Titre(detailsSerie: State<TmdbSerie>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .background(Color.Black)
         .padding(bottom = 20.dp)) {
-        Text(text = detailsFilm.value.title, fontSize = 20.sp, modifier = Modifier
+        Text(text = detailsSerie.value.name, fontSize = 20.sp, modifier = Modifier
             .background(Color.White)
             .padding(10.dp),
             fontWeight = FontWeight.Bold)
@@ -117,15 +115,15 @@ fun Titre(detailsFilm: State<TmdbMovie>) {
 }
 
 @Composable
-fun Synopsis(detailsFilm: State<TmdbMovie>) {
+fun Synopsis(detailsSerie: State<TmdbSerie>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.background(Color.White)
     ) {
         AsyncImage(
-            model = "https://image.tmdb.org/t/p/w500" + detailsFilm.value.poster_path,
-            contentDescription = "",
+            model = "https://image.tmdb.org/t/p/w500" + detailsSerie.value.poster_path,
+            contentDescription = "Poster Image",
             modifier = Modifier
                 .background(Color.White)
                 .padding(10.dp)
@@ -140,7 +138,7 @@ fun Synopsis(detailsFilm: State<TmdbMovie>) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = detailsFilm.value.overview,
+                text = detailsSerie.value.overview,
                 fontSize = 14.sp,
                 modifier = Modifier
                     .padding(10.dp)
@@ -151,12 +149,12 @@ fun Synopsis(detailsFilm: State<TmdbMovie>) {
 }
 
 @Composable
-fun ReleasedDate(detailsFilm: State<TmdbMovie>) {
+fun ReleasedDate(detailsSerie: State<TmdbSerie>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .background(Color.Black)
         .padding(top = 30.dp, bottom = 30.dp)) {
         Text(
-            text = "Released on " + detailsFilm.value.release_date,
+            text = "Released on " + detailsSerie.value.first_air_date,
             fontSize = 14.sp,
             modifier = Modifier
                 .background(Color.White)
@@ -166,47 +164,17 @@ fun ReleasedDate(detailsFilm: State<TmdbMovie>) {
 }
 
 @Composable
-fun Genres(detailsFilm: State<TmdbMovie>) {
+fun Genres(detailsSerie: State<TmdbSerie>) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 30.dp)
     ) {
-        detailsFilm.value.genres.forEach { genre ->
+        detailsSerie.value.genres.forEach { genre ->
             Text(text= genre.name, fontSize = 14.sp, modifier = Modifier
                 .background(Color.White)
                 .padding(10.dp))
         }
-    }
-}
-
-@Composable
-fun Headliners() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-        .background(Color.Black)
-        .padding(bottom = 10.dp)) {
-        Text(text = "Headliners", fontSize = 20.sp, modifier = Modifier
-            .background(Color.White)
-            .padding(10.dp),
-            fontWeight = FontWeight.Bold)
-
-    }
-}
-
-@Composable
-fun HeadlinersList(credit: Cast) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(20.dp)
-            .background(Color.White)
-    ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w500" + credit.profile_path,
-            contentDescription = "Affiche du film"
-        )
-        Text(text = credit.name)
-        Text(text = credit.character)
     }
 }

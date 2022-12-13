@@ -3,13 +3,12 @@ package com.example.movein
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.example.movein.converter.Converters
+import com.example.movein.converters.Converters
 import com.example.movein.database.AppDatabase
 import com.example.movein.database.FilmDao
-import com.example.movein.api.FakeTmdbApi
+import com.example.movein.apis.FakeTmdbApi
 import com.example.movein.repository.Repository
-import com.example.movein.api.TmdbAPI
-import com.squareup.moshi.Moshi
+import com.example.movein.apis.TmdbApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,7 +34,6 @@ object AppModule {
     @Singleton
     @Provides
     fun providerConverters() : Converters {
-        val moshi = Moshi.Builder().build()
         return Converters()
     }
     @Singleton
@@ -53,18 +51,18 @@ object AppModule {
     @RealApi
     @Singleton
     @Provides
-    fun provideTmdbApi() : TmdbAPI =
+    fun provideTmdbApi() : TmdbApi =
         Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/3/")
             .addConverterFactory(MoshiConverterFactory.create())
-            .build().create(TmdbAPI::class.java)
+            .build().create(TmdbApi::class.java)
 
     @FakeApi
     @Singleton
     @Provides
-    fun provideFakeTmdbApi() : TmdbAPI { return FakeTmdbApi() }
+    fun provideFakeTmdbApi() : TmdbApi { return FakeTmdbApi() }
 
     @Singleton
     @Provides
-    fun provideRepository(@RealApi api: TmdbAPI, db: FilmDao) = Repository(api, db)
+    fun provideRepository(@RealApi api: TmdbApi, db: FilmDao) = Repository(api, db)
 }

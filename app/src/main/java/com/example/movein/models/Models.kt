@@ -1,43 +1,42 @@
 package com.example.movein.models
 
-data class TmdbMovieResult(
+data class TmdbMovieResults(
     val results: List<TmdbMovie> = listOf())
 
-data class TmdbSerieResult(
+data class TmdbSerieResults(
     val results: List<TmdbSerie> = listOf())
 
-data class TmdbActorResult(
+data class TmdbActorResults(
     val results: List<TmdbActor> = listOf())
 
 data class TmdbMovie(
-    var overview: String = "",
-    val release_date: String = "",
     val id: String = "",
     val title: String = "",
-    val genres: List<Genre> = listOf(),
+    var overview: String = "",
     val backdrop_path: String? = "",
     val poster_path: String? = "",
+    val release_date: String = "",
+    val genres: List<Genre> = listOf(),
     val credits: Credits = Credits(),
     val isFav: Boolean = false
 )
 
 data class TmdbActor(
     val id: String = "",
-    val profile_path: String? = "",
     val name: String = "",
+    val profile_path: String? = "",
     val isFav: Boolean = false
 )
 
 data class TmdbSerie(
     val id: String = "",
-    val backdrop_path: String? = "",
-    val credits: Credits = Credits(),
-    val first_air_date: String = "",
-    val genres: List<Genre> = listOf(),
-    val origin_country: List<String> = listOf(),
     val name: String = "",
     val overview: String = "",
     val poster_path: String? = "",
+    val backdrop_path: String? = "",
+    val first_air_date: String = "",
+    val genres: List<Genre> = listOf(),
+    val credits: Credits = Credits(),
     val isFav: Boolean = false
 )
 

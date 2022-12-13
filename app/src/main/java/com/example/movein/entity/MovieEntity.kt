@@ -5,4 +5,4 @@ import androidx.room.PrimaryKey
 import com.example.movein.models.TmdbMovie
 
 @Entity
-data class FilmEntity(val fiche: TmdbMovie, @PrimaryKey val id: String)
+data class MovieEntity(val content: TmdbMovie, @PrimaryKey val id: String)

@@ -26,11 +26,8 @@ import com.example.movein.R
 
 @Composable
 fun Screen(classes: WindowSizeClass, navController: NavHostController) {
-    val classeHauteur = classes.heightSizeClass
-    val classeLargeur = classes.widthSizeClass
-    when (classeLargeur) {
+    when (classes.widthSizeClass) {
         WindowWidthSizeClass.Compact-> {
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -39,9 +36,9 @@ fun Screen(classes: WindowSizeClass, navController: NavHostController) {
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Presentation()
-                Infos()
+                Informations()
                 Spacer(Modifier.height(20.dp))
-                Demarrer { navController.navigate("movies") }
+                StartButton { navController.navigate("movies") }
             }
         }
         else -> {
@@ -56,9 +53,9 @@ fun Screen(classes: WindowSizeClass, navController: NavHostController) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Infos()
+                    Informations()
                     Spacer(Modifier.height(20.dp))
-                    Demarrer { navController.navigate("movies") }
+                    StartButton { navController.navigate("movies") }
                 }
             }
         }
@@ -74,7 +71,7 @@ fun Presentation() {
     ) {
         Image(
             painterResource(R.drawable.moi),
-            contentDescription = "ma tetê",
+            contentDescription = "Profile Image",
             Modifier
                 .clip(RoundedCornerShape(75.dp))
                 .size(150.dp),
@@ -83,7 +80,7 @@ fun Presentation() {
         Text(text="Valentin DEDET",
             fontSize = 30.sp,
         )
-        Text(text="Etudiant alternant en développement d'applications mobiles à la licence professionnelle DReAM à Castres",
+        Text(text="Étudiant alternant en développement d'applications mobiles à la licence professionnelle DReAM à Castres",
             textAlign = TextAlign.Center,
             fontSize = 15.sp,
             modifier = Modifier.width(350.dp)
@@ -92,17 +89,17 @@ fun Presentation() {
 }
 
 @Composable
-fun Infos() {
+fun Informations() {
     Column(
         horizontalAlignment = Alignment.Start
     ) {
-        Info(icon = Icons.Rounded.Email, text = "valentin.dedet@hotmail.fr")
-        Info(icon = Icons.Rounded.Share, text = "https://www.linkedin.com/in/valentin-dedet/")
+        Information(icon = Icons.Rounded.Email, text = "valentin.dedet@hotmail.fr")
+        Information(icon = Icons.Rounded.Share, text = "https://www.linkedin.com/in/valentin-dedet/")
     }
 }
 
 @Composable
-fun Info(icon: ImageVector, text: String) {
+fun Information(icon: ImageVector, text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -114,8 +111,8 @@ fun Info(icon: ImageVector, text: String) {
 }
 
 @Composable
-fun Demarrer(changerPageFilms: () -> Unit) {
+fun StartButton(changerPageFilms: () -> Unit) {
     Button(onClick = changerPageFilms) {
-        Text(text = "Démarrer")
+        Text(text = "Start")
     }
 }

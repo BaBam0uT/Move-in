@@ -12,9 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,32 +22,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.example.movein.entity.SerieEntity
-import com.example.movein.models.TmdbSerie
+import com.example.movein.entity.MovieEntity
+import com.example.movein.models.TmdbMovie
 import com.example.movein.viewmodel.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Series(
-    windowSizeClass: WindowSizeClass,
+fun Movies(
+    classes: WindowSizeClass,
     viewModel: MainViewModel,
     navController: NavHostController
 ) {
-    val series by viewModel.series.collectAsState()
-    viewModel.getTrendingSeries()
+    val movies by viewModel.movies.collectAsState()
+    viewModel.getTrendingMovies()
     val searchWidgetState by viewModel.searchWidgetState
     val searchTextState by viewModel.searchTextState
-    when (windowSizeClass.widthSizeClass) {
+    when (classes.widthSizeClass) {
         WindowWidthSizeClass.Compact-> {
             Scaffold(
                 topBar = {
                     MainAppBar(
                         searchWidgetState = searchWidgetState,
                         searchTextState = searchTextState,
-                        type = "a TV serie",
+                        type = "a movie",
                         onTextChange = { viewModel.updateSearchTextState(newValue = it) },
                         onCloseClicked = { viewModel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED) },
-                        onSearchClicked = { viewModel.getSearchedSeries() },
+                        onSearchClicked = { viewModel.getSearchedMovies() },
                         onSearchTriggered = { viewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED) },
                         viewModel = viewModel
                     )
@@ -59,13 +57,14 @@ fun Series(
                 }
             ) {
                 LazyVerticalGrid(columns = GridCells.Fixed(2),
-                    modifier = Modifier.background(Color.Black)
-                        .fillMaxSize()) {
-                    items(series) { serie ->
-                        SerieCard(viewModel = viewModel,
+                    modifier = Modifier
+                        .background(Color.Black)
+                        .fillMaxSize(),) {
+                    items(movies) { movie ->
+                        MovieCard(viewModel = viewModel,
                             navController = navController,
-                            serie = serie,
-                            path = serie.poster_path
+                            movie = movie,
+                            path = movie.poster_path
                         )
                     }
                 }
@@ -78,21 +77,24 @@ fun Series(
                     MainAppBar(
                         searchWidgetState = searchWidgetState,
                         searchTextState = searchTextState,
-                        type = "a TV serie",
+                        type = "a movie",
                         onTextChange = { viewModel.updateSearchTextState(newValue = it) },
                         onCloseClicked = { viewModel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED) },
-                        onSearchClicked = { viewModel.getSearchedSeries() },
+                        onSearchClicked = { viewModel.getSearchedMovies() },
                         onSearchTriggered = { viewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED) },
                         viewModel = viewModel
                     )
-                    LazyVerticalGrid(columns = GridCells.Fixed(3),
-                        modifier = Modifier.background(Color.Black)
-                            .fillMaxSize()) {
-                        items(series) { serie ->
-                            SerieCard(viewModel = viewModel,
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .background(Color.Black)
+                            .fillMaxSize(),
+                    ) {
+                        items(movies) { movie ->
+                            MovieCard(viewModel = viewModel,
                                 navController = navController,
-                                serie = serie,
-                                path = serie.backdrop_path
+                                movie = movie,
+                                path = movie.backdrop_path
                             )
                         }
                     }
@@ -103,51 +105,51 @@ fun Series(
 }
 
 @Composable
-fun SerieCard(viewModel: MainViewModel, navController: NavHostController, serie: TmdbSerie, path: String?) {
+fun MovieCard(viewModel: MainViewModel, navController: NavHostController, movie: TmdbMovie, path: String?) {
     Card(modifier = Modifier.padding(10.dp)) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .background(Color.White)
-                .clickable { navController.navigate("SerieDetails/${serie.id}") },
+                .clickable { navController.navigate("MovieDetails/${movie.id}") },
         ) {
             Box (modifier = Modifier.fillMaxSize()) {
                 AsyncImage(
                     model = "https://image.tmdb.org/t/p/w500$path",
-                    contentDescription = "Serie Image",
+                    contentDescription = "Movie Image",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-                FavoriteSerieIcon(viewModel = viewModel, serie = serie)
+                FavoriteMovieIcon(viewModel = viewModel, movie = movie)
             }
-            Text(text = serie.name, color = Color.Black, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-            Text(text = serie.first_air_date, color = Color.Black, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+            Text(text = movie.title, color = Color.Black, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+            Text(text = movie.release_date, color = Color.Black, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
-fun FavoriteSerieIcon(viewModel: MainViewModel, serie: TmdbSerie) {
+fun FavoriteMovieIcon(viewModel: MainViewModel, movie: TmdbMovie) {
     IconButton(onClick = {
-        if(serie.isFav) {
-            viewModel.deleteFavSerie(serie.id)
+        if(movie.isFav) {
+            viewModel.deleteFavMovie(movie.id)
             if(viewModel.isFavList) {
-                viewModel.getFavSeries()
+                viewModel.getFavMovies()
             } else {
-                viewModel.getTrendingSeries()
+                viewModel.getTrendingMovies()
             }
         } else {
-            viewModel.addFavSerie(SerieEntity(content = serie, id = serie.id))
+            viewModel.addFavMovie(MovieEntity(content = movie, id = movie.id))
             if(viewModel.isFavList) {
-                viewModel.getFavSeries()
+                viewModel.getFavMovies()
             } else {
-                viewModel.getTrendingSeries()
+                viewModel.getTrendingMovies()
             }
         }
     }) {
         Icon(imageVector = Icons.Outlined.Favorite,
             contentDescription = "Favorite Icon",
-            tint = if (serie.isFav) Color.Red else Color.White,
+            tint = if (movie.isFav) Color.Red else Color.White,
             modifier = Modifier
                 .size(40.dp)
                 .padding(5.dp))
