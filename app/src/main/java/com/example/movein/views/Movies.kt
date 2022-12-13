@@ -104,6 +104,7 @@ fun Movies(
     }
 }
 
+// Displays a movie card
 @Composable
 fun MovieCard(viewModel: MainViewModel, navController: NavHostController, movie: TmdbMovie, path: String?) {
     Card(modifier = Modifier.padding(10.dp)) {
@@ -128,11 +129,13 @@ fun MovieCard(viewModel: MainViewModel, navController: NavHostController, movie:
     }
 }
 
+// Displays a favorite icon for movies
 @Composable
 fun FavoriteMovieIcon(viewModel: MainViewModel, movie: TmdbMovie) {
     IconButton(onClick = {
         if(movie.isFav) {
             viewModel.deleteFavMovie(movie.id)
+            // Regenerates the list depending on whether it is a trending list or a favorite list
             if(viewModel.isFavList) {
                 viewModel.getFavMovies()
             } else {

@@ -28,8 +28,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.movein.R
 import com.example.movein.viewmodel.MainViewModel
 
+// Class representing a navigation tab
 class Screen(val route: String, val resourceId: Painter, val description: String, val label: String)
 
+// Displays the navigation bar at the bottom of the screen
 @Composable
 fun NavigationBar(viewModel: MainViewModel, navController: NavHostController) {
     val items = listOf(
@@ -63,6 +65,7 @@ fun NavigationBar(viewModel: MainViewModel, navController: NavHostController) {
     }
 }
 
+// Displays the navigation bar on the left of the screen
 @Composable
 fun NavigationRail(viewModel: MainViewModel, navController: NavHostController) {
     val items = listOf(
@@ -96,11 +99,13 @@ fun NavigationRail(viewModel: MainViewModel, navController: NavHostController) {
     }
 }
 
+// Class representing whether the search bar is displayed or not
 enum class SearchWidgetState {
     OPENED,
     CLOSED
 }
 
+// Displays the bar at the top of the screen with, in particular, the search and the list of favorites icon
 @Composable
 fun MainAppBar(
     searchWidgetState: SearchWidgetState,
@@ -131,6 +136,7 @@ fun MainAppBar(
     }
 }
 
+// Displays the bar at the top of the screen without displaying the search bar
 @Composable
 fun DefaultAppBar(onSearchClicked: () -> Unit,
                   viewModel: MainViewModel
@@ -181,6 +187,7 @@ fun DefaultAppBar(onSearchClicked: () -> Unit,
     )
 }
 
+// Displays the bar at the top of the screen when displaying the search bar
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchAppBar(

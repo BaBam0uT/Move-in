@@ -102,6 +102,7 @@ fun Series(
     }
 }
 
+// Displays a serie card
 @Composable
 fun SerieCard(viewModel: MainViewModel, navController: NavHostController, serie: TmdbSerie, path: String?) {
     Card(modifier = Modifier.padding(10.dp)) {
@@ -126,11 +127,13 @@ fun SerieCard(viewModel: MainViewModel, navController: NavHostController, serie:
     }
 }
 
+// Displays a favorite icon for series
 @Composable
 fun FavoriteSerieIcon(viewModel: MainViewModel, serie: TmdbSerie) {
     IconButton(onClick = {
         if(serie.isFav) {
             viewModel.deleteFavSerie(serie.id)
+            // Regenerates the list depending on whether it is a trending list or a favorite list
             if(viewModel.isFavList) {
                 viewModel.getFavSeries()
             } else {

@@ -107,6 +107,7 @@ fun Actors(
     }
 }
 
+// Displays an actor card
 @Composable
 fun ActorCard(viewModel: MainViewModel, actor: TmdbActor, path: String?) {
     Card(modifier = Modifier.padding(10.dp)) {
@@ -129,11 +130,13 @@ fun ActorCard(viewModel: MainViewModel, actor: TmdbActor, path: String?) {
     }
 }
 
+// Displays a favorite icon for actors
 @Composable
 fun FavoriteActorIcon(viewModel: MainViewModel, actor: TmdbActor) {
     IconButton(onClick = {
         if(actor.isFav) {
             viewModel.deleteFavActor(actor.id)
+            // Regenerates the list depending on whether it is a trending list or a favorites list
             if(viewModel.isFavList) {
                 viewModel.getFavActors()
             } else {

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -21,14 +22,14 @@ import com.example.movein.models.TmdbSerie
 import com.example.movein.viewmodel.MainViewModel
 
 @Composable
-fun DetailsSerie(
+fun SerieDetails(
     classes: WindowSizeClass,
     viewModel: MainViewModel,
     idSerie: String?
 ) {
     val serieDetails = viewModel.serie.collectAsState()
     if (idSerie != null) {
-        viewModel.getSeriesDetails(idSerie)
+        viewModel.getSerieDetails(idSerie)
     }
     val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(3) }
     when (classes.widthSizeClass) {
@@ -46,13 +47,13 @@ fun DetailsSerie(
                     )
                 }
                 item(span = span) {
-                    Titre(detailsSerie = serieDetails)
+                    Title(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    Synopsis(detailsSerie = serieDetails)
+                    Overview(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    ReleasedDate(detailsSerie = serieDetails)
+                    ReleaseDate(detailsSerie = serieDetails)
                 }
                 item(span = span) {
                     Genres(detailsSerie = serieDetails)
@@ -79,13 +80,13 @@ fun DetailsSerie(
                     )
                 }
                 item(span = span) {
-                    Titre(detailsSerie = serieDetails)
+                    Title(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    Synopsis(detailsSerie = serieDetails)
+                    Overview(detailsSerie = serieDetails)
                 }
                 item(span = span) {
-                    ReleasedDate(detailsSerie = serieDetails)
+                    ReleaseDate(detailsSerie = serieDetails)
                 }
                 item(span = span) {
                     Genres(detailsSerie = serieDetails)
@@ -101,12 +102,16 @@ fun DetailsSerie(
     }
 }
 
+// Displays the serie title
 @Composable
-fun Titre(detailsSerie: State<TmdbSerie>) {
+fun Title(detailsSerie: State<TmdbSerie>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .background(Color.Black)
         .padding(bottom = 20.dp)) {
-        Text(text = detailsSerie.value.name, fontSize = 20.sp, modifier = Modifier
+        Text(text = detailsSerie.value.name,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
             .background(Color.White)
             .padding(10.dp),
             fontWeight = FontWeight.Bold)
@@ -114,8 +119,9 @@ fun Titre(detailsSerie: State<TmdbSerie>) {
     }
 }
 
+// Displays the serie overview
 @Composable
-fun Synopsis(detailsSerie: State<TmdbSerie>) {
+fun Overview(detailsSerie: State<TmdbSerie>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -131,7 +137,7 @@ fun Synopsis(detailsSerie: State<TmdbSerie>) {
         Spacer(Modifier.height(10.dp))
         Column {
             Text(
-                text = "Synopsis",
+                text = "Overview",
                 fontSize = 16.sp,
                 modifier = Modifier
                     .padding(10.dp),
@@ -148,8 +154,9 @@ fun Synopsis(detailsSerie: State<TmdbSerie>) {
     }
 }
 
+// Displays the serie release date
 @Composable
-fun ReleasedDate(detailsSerie: State<TmdbSerie>) {
+fun ReleaseDate(detailsSerie: State<TmdbSerie>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .background(Color.Black)
         .padding(top = 30.dp, bottom = 30.dp)) {
@@ -163,6 +170,7 @@ fun ReleasedDate(detailsSerie: State<TmdbSerie>) {
     }
 }
 
+// Displays the serie genres
 @Composable
 fun Genres(detailsSerie: State<TmdbSerie>) {
     Row(

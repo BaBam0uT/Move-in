@@ -7,6 +7,7 @@ import com.example.movein.entity.MovieEntity
 import com.example.movein.entity.SerieEntity
 
 class Repository(private val api: TmdbApi, private val db: FilmDao) {
+    // All methods that use TmdbApi
     suspend fun trendingMovies(apiKey: String) = api.trendingMovies(apiKey)
     suspend fun trendingSeries(apiKey: String) = api.trendingSeries(apiKey)
     suspend fun trendingActors(apiKey: String) = api.trendingActors(apiKey)
@@ -16,6 +17,7 @@ class Repository(private val api: TmdbApi, private val db: FilmDao) {
     suspend fun movieDetails(apiKey: String, idMovie: String, appendToResponse: String) = api.movieDetails(apiKey, idMovie, appendToResponse)
     suspend fun serieDetails(apiKey: String, idSerie: String, appendToResponse: String) = api.serieDetails(apiKey, idSerie, appendToResponse)
 
+    // All methods that use the Database
     suspend fun getFavMovies() = db.getFavMovies()
     suspend fun getFavSeries() = db.getFavSeries()
     suspend fun getFavActors() = db.getFavActors()

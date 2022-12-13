@@ -11,13 +11,15 @@ import com.squareup.moshi.Moshi
 @ProvidedTypeConverter
 class Converters() {
     private val moshi: Moshi = Moshi.Builder().build()
-    private val jsonAdapterFilm: JsonAdapter<TmdbMovie> = moshi.adapter(TmdbMovie::class.java)
+    // Json adapters variables
+    private val jsonAdapterMovie: JsonAdapter<TmdbMovie> = moshi.adapter(TmdbMovie::class.java)
     private val jsonAdapterSerie: JsonAdapter<TmdbSerie> = moshi.adapter(TmdbSerie::class.java)
     private val jsonAdapterActor: JsonAdapter<TmdbActor> = moshi.adapter(TmdbActor::class.java)
 
+    // Converters Methods
     @TypeConverter
     fun stringToTmdbMovie(value: String): TmdbMovie? {
-        return jsonAdapterFilm.fromJson(value)
+        return jsonAdapterMovie.fromJson(value)
     }
 
     @TypeConverter
@@ -32,7 +34,7 @@ class Converters() {
 
     @TypeConverter
     fun tmdbMovieToString(film: TmdbMovie): String {
-        return jsonAdapterFilm.toJson(film)
+        return jsonAdapterMovie.toJson(film)
     }
 
     @TypeConverter

@@ -23,14 +23,14 @@ import com.example.movein.models.TmdbMovie
 import com.example.movein.viewmodel.MainViewModel
 
 @Composable
-fun DetailsFilm(
+fun MovieDetails(
     classes: WindowSizeClass,
     viewModel: MainViewModel,
     idMovie: String?
 ) {
     val movieDetails = viewModel.movie.collectAsState()
     if (idMovie != null) {
-        viewModel.getFilmsDetails(idMovie)
+        viewModel.getFilmDetails(idMovie)
     }
     val span: (LazyGridItemSpanScope) -> GridItemSpan = { GridItemSpan(3) }
     when (classes.widthSizeClass) {
@@ -48,13 +48,13 @@ fun DetailsFilm(
                     )
                 }
                 item(span = span) {
-                    Titre(detailsFilm = movieDetails)
+                    Title(detailsFilm = movieDetails)
                 }
                 item(span = span) {
-                    Synopsis(detailsFilm = movieDetails)
+                    Overview(detailsFilm = movieDetails)
                 }
                 item(span = span) {
-                    ReleasedDate(detailsFilm = movieDetails)
+                    ReleaseDate(detailsFilm = movieDetails)
                 }
                 item(span = span) {
                     Genres(detailsFilm = movieDetails)
@@ -81,13 +81,13 @@ fun DetailsFilm(
                     )
                 }
                 item(span = span) {
-                    Titre(detailsFilm = movieDetails)
+                    Title(detailsFilm = movieDetails)
                 }
                 item(span = span) {
-                    Synopsis(detailsFilm = movieDetails)
+                    Overview(detailsFilm = movieDetails)
                 }
                 item(span = span) {
-                    ReleasedDate(detailsFilm = movieDetails)
+                    ReleaseDate(detailsFilm = movieDetails)
                 }
                 item(span = span) {
                     Genres(detailsFilm = movieDetails)
@@ -103,12 +103,16 @@ fun DetailsFilm(
     }
 }
 
+// Displays the movie title
 @Composable
-fun Titre(detailsFilm: State<TmdbMovie>) {
+fun Title(detailsFilm: State<TmdbMovie>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .background(Color.Black)
         .padding(bottom = 20.dp)) {
-        Text(text = detailsFilm.value.title, fontSize = 20.sp, modifier = Modifier
+        Text(text = detailsFilm.value.title,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
             .background(Color.White)
             .padding(10.dp),
             fontWeight = FontWeight.Bold)
@@ -116,8 +120,9 @@ fun Titre(detailsFilm: State<TmdbMovie>) {
     }
 }
 
+// Displays the movie overview
 @Composable
-fun Synopsis(detailsFilm: State<TmdbMovie>) {
+fun Overview(detailsFilm: State<TmdbMovie>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -133,7 +138,7 @@ fun Synopsis(detailsFilm: State<TmdbMovie>) {
         Spacer(Modifier.height(10.dp))
         Column {
             Text(
-                text = "Synopsis",
+                text = "Overview",
                 fontSize = 16.sp,
                 modifier = Modifier
                     .padding(10.dp),
@@ -150,8 +155,9 @@ fun Synopsis(detailsFilm: State<TmdbMovie>) {
     }
 }
 
+// Displays the movie release date
 @Composable
-fun ReleasedDate(detailsFilm: State<TmdbMovie>) {
+fun ReleaseDate(detailsFilm: State<TmdbMovie>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .background(Color.Black)
         .padding(top = 30.dp, bottom = 30.dp)) {
@@ -165,6 +171,7 @@ fun ReleasedDate(detailsFilm: State<TmdbMovie>) {
     }
 }
 
+// Displays the movie genres
 @Composable
 fun Genres(detailsFilm: State<TmdbMovie>) {
     Row(
@@ -181,6 +188,7 @@ fun Genres(detailsFilm: State<TmdbMovie>) {
     }
 }
 
+// Displays the movie/serie headliners title
 @Composable
 fun Headliners() {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
@@ -194,6 +202,7 @@ fun Headliners() {
     }
 }
 
+// Displays the movie/serie headliners list
 @Composable
 fun HeadlinersList(credit: Cast) {
     Card(modifier = Modifier.padding(10.dp)) {

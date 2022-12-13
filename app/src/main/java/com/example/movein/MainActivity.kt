@@ -24,13 +24,14 @@ class MainActivity : ComponentActivity() {
                 val windowSizeClass = calculateWindowSizeClass(this)
                 val navController = rememberNavController()
                 val viewModel: MainViewModel by viewModels()
+                // All routes in the app
                 NavHost(navController = navController, startDestination = "profile") {
                     composable("profile") { Screen(windowSizeClass, navController) }
                     composable("movies") { Movies(windowSizeClass, viewModel, navController) }
                     composable("series") { Series(windowSizeClass, viewModel, navController) }
                     composable("actors") { Actors(windowSizeClass, viewModel, navController) }
-                    composable("MovieDetails/{idMovie}") { backStackEntry -> DetailsFilm(windowSizeClass, viewModel, backStackEntry.arguments?.getString("idMovie")) }
-                    composable("SerieDetails/{idSerie}") { backStackEntry -> DetailsSerie(windowSizeClass, viewModel, backStackEntry.arguments?.getString("idSerie")) }
+                    composable("MovieDetails/{idMovie}") { backStackEntry -> MovieDetails(windowSizeClass, viewModel, backStackEntry.arguments?.getString("idMovie")) }
+                    composable("SerieDetails/{idSerie}") { backStackEntry -> SerieDetails(windowSizeClass, viewModel, backStackEntry.arguments?.getString("idSerie")) }
                 }
             }
         }
