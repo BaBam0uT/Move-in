@@ -11,7 +11,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.monprofil"
+        applicationId "com.example.movein"
         minSdk 21
         targetSdk 32
         versionCode 1
